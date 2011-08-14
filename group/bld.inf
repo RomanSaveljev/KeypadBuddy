@@ -1,0 +1,30 @@
+/*
+============================================================================
+ Name		: bld.inf
+ Author	  :
+ Copyright   : Your copyright notice
+ Description : This file provides the information required for building the
+				whole of a KeypadBuddy.
+============================================================================
+*/
+
+PRJ_PLATFORMS
+WINSCW ARMV5 GCCE
+
+PRJ_EXTENSIONS
+
+	START EXTENSION s60/mifconv
+	OPTION TARGETFILE keypadbuddy_icon.mif
+	OPTION HEADERFILE keypadbuddy_icon.mbg
+	OPTION SOURCEDIR ../gfx
+	OPTION SOURCES -c32 icon
+	END
+
+PRJ_MMPFILES
+
+KeypadBuddy.mmp
+KeypadBuddyMonitor.mmp
+
+PRJ_EXPORTS
+../data/20057507.txt            /epoc32/release/winscw/udeb/z/private/10202be9/20057507.txt
+../data/20057507.txt            /epoc32/data/z/private/10202be9/20057507.txt

@@ -1,0 +1,69 @@
+/*
+============================================================================
+ Name		: KeypadBuddy.mmp
+ Author	  :
+ Copyright   : Your copyright notice
+ Description : This is the project specification file for KeypadBuddy.
+============================================================================
+*/
+APP_LAYER_SYSTEMINCLUDE
+
+//0x20057507
+
+TARGET			KeypadBuddy.exe
+TARGETTYPE		exe
+UID		  0x100039CE 0xe126af48
+
+SOURCEPATH		..\src\ui
+SOURCE			KeypadBuddy.cpp
+SOURCE			KeypadBuddyApplication.cpp
+SOURCE			KeypadBuddyAppView.cpp
+SOURCE			KeypadBuddyAppUi.cpp
+SOURCE			KeypadBuddyDocument.cpp
+SOURCE          KeypadBuddyEngine.cpp
+
+SOURCEPATH		..\data
+
+START RESOURCE	KeypadBuddy.rss
+HEADER
+TARGET KeypadBuddy
+TARGETPATH resource\apps
+END //RESOURCE
+
+START RESOURCE	KeypadBuddy_reg.rss
+TARGET KeypadBuddy_reg
+TARGETPATH 	  \private\10003a3f\apps
+END //RESOURCE
+
+USERINCLUDE	   ..\inc\ui
+USERINCLUDE    ..\inc
+
+
+LIBRARY		   euser.lib
+LIBRARY		   apparc.lib
+LIBRARY		   cone.lib
+LIBRARY		   eikcore.lib
+LIBRARY		   avkon.lib
+LIBRARY		   commonengine.lib
+LIBRARY		   efsrv.lib
+LIBRARY		   estor.lib
+LIBRARY        aknnotify.lib
+LIBRARY        hlplch.lib
+LIBRARY        eikcoctl.lib
+LIBRARY        fbscli.lib
+LIBRARY        aknicon.lib
+
+
+LANG SC
+
+VENDORID	  	  0
+
+DEBUGGABLE_UDEBONLY
+// End of File
+START BITMAP KeypadBuddy.mbm
+	TARGETPATH resource\apps
+	HEADER
+	SOURCEPATH ..\gfx
+	SOURCE c16 button_inactive.bmp button_active.bmp
+	SOURCE 1 button_mask.bmp
+END

@@ -1,0 +1,22 @@
+TARGET KeypadBuddyMonitor.exe
+TARGETTYPE exe
+UID 0 0x20057507
+
+CAPABILITY SwEvent
+
+SOURCEPATH      ../src/monitor
+SOURCE          KeypadBuddyServer.cpp
+SOURCE          KeypadBuddySession.cpp
+SOURCE          InputMethodWatcher.cpp
+SOURCE          ForegroundApplicationWatcher.cpp
+
+USERINCLUDE     ../inc/monitor
+USERINCLUDE     ../inc
+SYSTEMINCLUDE   /epoc32/include
+SYSTEMINCLUDE   /epoc32/include/mw
+SYSTEMINCLUDE   /epoc32/include/platform
+
+LIBRARY         euser.lib
+LIBRARY         centralrepository.lib
+LIBRARY         ws32.lib
+LIBRARY         apgrfx.lib
