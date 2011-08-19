@@ -11,7 +11,9 @@ class CForegroundApplicationWatcher : public CActive
 public:
     static CForegroundApplicationWatcher* NewL(CKeypadBuddyServer& aServer);
     ~CForegroundApplicationWatcher();
-    TUid ForegroundAppL() const;
+    TUid ForegroundAppL();
+    inline RWsSession& WsSession() {return iWsSession;}
+    inline RWindowGroup& WindowGroup() {return iWg;}
 private:
     CForegroundApplicationWatcher(CKeypadBuddyServer& aServer);
     void ConstructL();

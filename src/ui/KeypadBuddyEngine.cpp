@@ -1,5 +1,6 @@
 #include "KeypadBuddyEngine.h"
 #include "MonitorDefinitions.h"
+#include <e32uid.h>
 
 class RMonitorApi : public RSessionBase
     {
@@ -37,11 +38,12 @@ CKeypadBuddyEngine::CKeypadBuddyEngine(MMonitorStateObserver& aObserver) : CActi
 
 void CKeypadBuddyEngine::ConstructL()
     {
-    TFindServer findServer(KMonitorServerName);
+    TFindProcess findProcess(KMonitorServerNameSearch);
     TFullName name;
-    if (findServer.Next(name) == KErrNone)
+    if (findProcess.Next(name) == KErrNone)
         {
-        User::LeaveIfError(iMonitor.Open(KMonitorServerName));
+        TInt err = iMonitor.Open(name);
+        User::LeaveIfError(err);
         AttachToMonitor();
         }
     }
@@ -71,7 +73,10 @@ void CKeypadBuddyEngine::SetMonitorActiveL(TBool aActive)
             {
             if (!IsActive())
                 {
-                User::LeaveIfError(iMonitor.Create(KMonitorServerFileName, KNullDesC));
+
+                TInt err = iMonitor.Create(KMonitorServerFileName, KNullDesC, TUidType(KExecutableImageUid, TUid::Null(), TUid::Null()));
+                //TInt err = iMonitor.Create(_L("about.exe"), KNullDesC);
+                User::LeaveIfError(err);
                 iStatus = KRequestPending;
                 iMonitor.Rendezvous(iStatus);
                 iMonitor.Resume();

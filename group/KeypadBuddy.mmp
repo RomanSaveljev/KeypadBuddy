@@ -6,13 +6,12 @@
  Description : This is the project specification file for KeypadBuddy.
 ============================================================================
 */
-APP_LAYER_SYSTEMINCLUDE
 
-//0x20057507
+#include "../inc/keypadbuddyuids.hrh"
 
 TARGET			KeypadBuddy.exe
 TARGETTYPE		exe
-UID		  0x100039CE 0xe126af48
+UID		  0x100039CE KKeypadBuddyUidValue
 
 SOURCEPATH		..\src\ui
 SOURCE			KeypadBuddy.cpp
@@ -21,6 +20,10 @@ SOURCE			KeypadBuddyAppView.cpp
 SOURCE			KeypadBuddyAppUi.cpp
 SOURCE			KeypadBuddyDocument.cpp
 SOURCE          KeypadBuddyEngine.cpp
+
+USERINCLUDE    ..\inc\ui
+USERINCLUDE    ..\inc
+SYSTEMINCLUDE  \epoc32\include
 
 SOURCEPATH		..\data
 
@@ -35,16 +38,11 @@ TARGET KeypadBuddy_reg
 TARGETPATH 	  \private\10003a3f\apps
 END //RESOURCE
 
-USERINCLUDE	   ..\inc\ui
-USERINCLUDE    ..\inc
-
-
 LIBRARY		   euser.lib
 LIBRARY		   apparc.lib
 LIBRARY		   cone.lib
 LIBRARY		   eikcore.lib
 LIBRARY		   avkon.lib
-LIBRARY		   commonengine.lib
 LIBRARY		   efsrv.lib
 LIBRARY		   estor.lib
 LIBRARY        aknnotify.lib

@@ -3,8 +3,9 @@
 
 #include <e32def.h>
 
+_LIT(KMonitorServerNameSearch, "KeyPadBuddyMonitor*");
 _LIT(KMonitorServerName, "KeyPadBuddyMonitor");
-_LIT(KMonitorServerFileName, "KeyPadBuddyMonitor.exe");
+_LIT(KMonitorServerFileName, "keypadbuddymonitor.exe");
 
 enum TMonitorFunctions
     {

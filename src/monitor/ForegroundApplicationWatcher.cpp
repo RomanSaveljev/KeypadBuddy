@@ -1,6 +1,7 @@
 #include "ForegroundApplicationWatcher.h"
 #include <APGWGNAM.H>
 #include "KeypadBuddyServer.h"
+#include <akndef.h>
 
 CForegroundApplicationWatcher* CForegroundApplicationWatcher::NewL(CKeypadBuddyServer& aServer)
     {
@@ -29,6 +30,9 @@ void CForegroundApplicationWatcher::ConstructL()
     wn->SetWindowGroupName(iWg);
     CleanupStack::PopAndDestroy();
     User::LeaveIfError(iWg.EnableGroupChangeEvents());
+    User::LeaveIfError(iWg.EnableFocusChangeEvents());
+    User::LeaveIfError(iWg.EnableGroupListChangeEvents());
+    Watch();
     }
 
 CForegroundApplicationWatcher::~CForegroundApplicationWatcher()
@@ -46,19 +50,19 @@ void CForegroundApplicationWatcher::Watch()
 
 void CForegroundApplicationWatcher::RunL()
     {
-    if (iStatus != KErrCancel)
-        {
-        Watch();
-        }
     if (iStatus == KErrNone)
         {
         TWsEvent e;
         iWsSession.GetEvent(e);
         }
+    if (iStatus != KErrCancel)
+        {
+        Watch();
+        }
     iServer.ForegroundApplicationChanged();
     }
 
-TUid CForegroundApplicationWatcher::ForegroundAppL() const
+TUid CForegroundApplicationWatcher::ForegroundAppL()
     {
     TInt wgid = iWsSession.GetFocusWindowGroup();
     CApaWindowGroupName* gn;

@@ -1,0 +1,8 @@
+#ifndef KEYPADBUDDYUIDS_HRH
+#define KEYPADBUDDYUIDS_HRH
+
+#define KKeypadBuddyUidValue             0x20057BEB
+#define KKeypadBuddyMonitorUidValue      0x20057507
+#define KKeypadBuddyNotifierUidValue     0x20057BEC
+
+#endif //KEYPADBUDDYUIDS_HRH

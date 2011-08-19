@@ -10,8 +10,6 @@
 #ifndef __KEYPADBUDDY_HRH__
 #define __KEYPADBUDDY_HRH__
 
-#define _UID3 0xe126af48
-
 // KeypadBuddy enumerate command codes
 enum TKeypadBuddyIds
     {

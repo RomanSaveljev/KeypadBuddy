@@ -19,7 +19,7 @@ void CKeypadBuddySession::ServiceL(const RMessage2& aMessage)
             }
         case EMonitorResetCache:
             {
-            User::LeaveIfError(iServer.Repository().Reset());
+            iServer.ResetCacheL();
             aMessage.Complete(KErrNone);
             }
             break;

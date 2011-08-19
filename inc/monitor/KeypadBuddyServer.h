@@ -3,6 +3,7 @@
 
 #include <e32base.h>
 #include <centralrepository.h>
+#include <f32file.h>
 
 class CForegroundApplicationWatcher;
 class CInputMethodWatcher;
@@ -15,8 +16,8 @@ public:
     CSession2* NewSessionL( const TVersion& aVersion, const RMessage2& aMessage ) const;
     void ForegroundApplicationChanged();
     void InputMethodSettingsChanged();
-    CRepository& Repository();
     CRepository& FepRepository();
+    void ResetCacheL();
 private:
     CKeypadBuddyServer();
     void ConstructL();
@@ -24,9 +25,10 @@ private:
     void InputMethodSettingsChangedL();
     void StartWatchingFepKeysL();
     void CancelWatchingFepKeys();
+    TInt GetCacheFilePath(TFileName& aFileName);
 private:
+    RFs iFs;
     TInt iLastError;
-    CRepository* iRepository;
     CRepository* iFepRepository;
     CForegroundApplicationWatcher* iForegroundAppWatcher;
     CInputMethodWatcher* iChineseInputModeWatcher;

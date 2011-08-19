@@ -1,0 +1,26 @@
+#include <uikon.hrh>
+#include <ecom/registryinfo.rh>
+#include "KeypadBuddyUids.hrh"
+
+RESOURCE REGISTRY_INFO theInfo
+    {
+    dll_uid = KKeypadBuddyNotifierUidValue;
+    interfaces =
+        {
+        INTERFACE_INFO
+            {
+            interface_uid = KUikonUidPluginInterfaceNotifiers;
+            implementations =
+                {
+                IMPLEMENTATION_INFO
+                    {
+                    implementation_uid = KKeypadBuddyNotifierUidValue;
+                    version_no = 1;
+                    display_name = "";
+                    default_data = "";
+                    opaque_data = "";
+                    }
+                };
+            }
+        };
+    }

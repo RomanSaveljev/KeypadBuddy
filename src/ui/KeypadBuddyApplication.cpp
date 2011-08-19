@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name		: KeypadBuddyApplication.cpp
- Author	  : 
+ Author	  :
  Copyright   : Your copyright notice
  Description : Main application class
  ============================================================================
@@ -11,6 +11,7 @@
 #include "KeypadBuddy.hrh"
 #include "KeypadBuddyDocument.h"
 #include "KeypadBuddyApplication.h"
+#include "keypadbuddyuids.hrh"
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -33,7 +34,8 @@ CApaDocument* CKeypadBuddyApplication::CreateDocumentL()
 TUid CKeypadBuddyApplication::AppDllUid() const
     {
     // Return the UID for the KeypadBuddy application
-    return KUidKeypadBuddyApp;
+    TUid uid = {KKeypadBuddyUidValue};
+    return uid;
     }
 
 // End of File

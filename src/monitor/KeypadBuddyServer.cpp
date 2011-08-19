@@ -3,8 +3,12 @@
 #include "ForegroundApplicationWatcher.h"
 #include "InputMethodWatcher.h"
 #include "MonitorDefinitions.h"
-
-const TUid KRepositoryUid = {0x20057507};
+#include <s32file.h>
+#include <e32debug.h>
+#include <akndef.h>
+#include <APGTASK.H>
+#include <aknglobalnote.h>
+#include "KeypadBuddyUids.hrh"
 
 const TUid KCRUidAknFep = { 0x101F876D };
 const TUint32 KAknFepChineseInputMode = 0x00000004;
@@ -13,7 +17,7 @@ const TUint32 KAknFepJapanesePredTxtFlag = 0x00000006;
 const TUint32 KAknFepPredTxtFlag = 0x00000007;
 const TUint32 KAknFepCangJieMode = 0x00000009;
 
-typedef TBuf8<40> TInputMethodSettingsBuffer;
+_LIT(KCacheFileName, "cache.dat");
 
 struct TInputMethodSettings
     {
@@ -22,38 +26,29 @@ struct TInputMethodSettings
     TInt iJapanesePredTxtFlag;
     TInt iPredTxtFlag;
     TInt iCangJieMode;
-    void Format(TInputMethodSettingsBuffer& aBuffer)
+    TInputMethodSettings() :
+        iChineseInputMode(0),
+        iInputTxtLang(0),
+        iJapanesePredTxtFlag(0),
+        iPredTxtFlag(0),
+        iCangJieMode(0)
+        {}
+    void LoadL(RDictionaryReadStream& aReadStream)
         {
-        _LIT8(KFormat, "%08x");
-        aBuffer.Zero();
-        aBuffer.AppendFormat(KFormat, iChineseInputMode);
-        aBuffer.AppendFormat(KFormat, iInputTxtLang);
-        aBuffer.AppendFormat(KFormat, iJapanesePredTxtFlag);
-        aBuffer.AppendFormat(KFormat, iPredTxtFlag);
-        aBuffer.AppendFormat(KFormat, iCangJieMode);
+        iChineseInputMode = aReadStream.ReadInt32L();
+        iInputTxtLang = aReadStream.ReadInt32L();
+        iJapanesePredTxtFlag = aReadStream.ReadInt32L();
+        iPredTxtFlag = aReadStream.ReadInt32L();
+        iCangJieMode = aReadStream.ReadInt32L();
         }
-    TInt Parse(const TInputMethodSettingsBuffer& aBuffer)
+    void SaveL(RDictionaryWriteStream& aWriteStream)
         {
-        TInt ret = KErrNone;
-        TLex8 lex(aBuffer);
-        TUint chineseInputMode, inputTxtLang, japanesePredTxtFlag, predTxtFlag, cangJieMode;
-        if (KErrNone != lex.Val(chineseInputMode, EHex) ||
-            KErrNone != lex.Val(inputTxtLang, EHex) ||
-            KErrNone != lex.Val(japanesePredTxtFlag, EHex) ||
-            KErrNone != lex.Val(predTxtFlag, EHex) ||
-            KErrNone != lex.Val(cangJieMode, EHex))
-            {
-            ret = KErrCorrupt;
-            }
-        else
-            {
-            iChineseInputMode = chineseInputMode;
-            iInputTxtLang = inputTxtLang;
-            iJapanesePredTxtFlag = japanesePredTxtFlag;
-            iPredTxtFlag = predTxtFlag;
-            iCangJieMode = cangJieMode;
-            }
-        return ret;
+        aWriteStream.WriteInt32L(iChineseInputMode);
+        aWriteStream.WriteInt32L(iInputTxtLang);
+        aWriteStream.WriteInt32L(iJapanesePredTxtFlag);
+        aWriteStream.WriteInt32L(iPredTxtFlag);
+        aWriteStream.WriteInt32L(iCangJieMode);
+        aWriteStream.CommitL();
         }
     };
 
@@ -71,8 +66,8 @@ CKeypadBuddyServer::CKeypadBuddyServer() : CServer2(CActive::EPriorityStandard)
 
 void CKeypadBuddyServer::ConstructL()
     {
+    User::LeaveIfError(iFs.Connect());
     StartL(KMonitorServerName);
-    iRepository = CRepository::NewL(KRepositoryUid);
     iFepRepository = CRepository::NewL(KCRUidAknFep);
     iForegroundAppWatcher = CForegroundApplicationWatcher::NewL(*this);
     iChineseInputModeWatcher = new(ELeave) CInputMethodWatcher(*this);
@@ -91,8 +86,8 @@ CKeypadBuddyServer::~CKeypadBuddyServer()
     delete iJapanesePredTxtFlagWatcher;
     delete iPredTxtFlagWatcher;
     delete iCangJieModeWatcher;
-    delete iRepository;
     delete iFepRepository;
+    iFs.Close();
     }
 
 CSession2* CKeypadBuddyServer::NewSessionL( const TVersion& /*aVersion*/, const RMessage2& /*aMessage*/ ) const
@@ -110,36 +105,64 @@ void CKeypadBuddyServer::ForegroundApplicationChangedL()
     TUid uid = iForegroundAppWatcher->ForegroundAppL();
     if (uid != TUid::Null())
         {
-        TInputMethodSettingsBuffer buffer;
-        if (KErrNone == iRepository->Get(uid.iUid, buffer))
+        TFileName privatePath;
+        User::LeaveIfError(GetCacheFilePath(privatePath));
+        RProcess me;
+        CDictionaryFileStore* fileStore = CDictionaryFileStore::OpenLC(iFs, privatePath, me.SecureId());
+        if (fileStore->IsPresentL(uid))
             {
+            RDictionaryReadStream in;
+            in.OpenLC(*fileStore, uid);
             TInputMethodSettings settings;
-            if (KErrNone == settings.Parse(buffer))
+            settings.LoadL(in);
+            CancelWatchingFepKeys();
+            TInt err = KErrNone;
+            TUint32 keyInfo = 0;
+            do
                 {
-                CancelWatchingFepKeys();
-                TInt err = KErrNone;
-                do
+                User::LeaveIfError(iFepRepository->StartTransaction(CRepository::EConcurrentReadWriteTransaction));
+                if (settings.iChineseInputMode != KErrNotFound)
                     {
-                    User::LeaveIfError(iFepRepository->StartTransaction(CRepository::EConcurrentReadWriteTransaction));
                     User::LeaveIfError(iFepRepository->Set(KAknFepChineseInputMode, settings.iChineseInputMode));
-                    User::LeaveIfError(iFepRepository->Set(KAknFepInputTxtLang, settings.iInputTxtLang));
-                    User::LeaveIfError(iFepRepository->Set(KAknFepJapanesePredTxtFlag, settings.iJapanesePredTxtFlag));
-                    User::LeaveIfError(iFepRepository->Set(KAknFepPredTxtFlag, settings.iPredTxtFlag));
-                    User::LeaveIfError(iFepRepository->Set(KAknFepCangJieMode, settings.iCangJieMode));
-                    TUint32 keyInfo;
-                    err = iFepRepository->CommitTransaction(keyInfo);
-                    __ASSERT_ALWAYS(err == KErrNone || err == KErrLocked, User::Leave(err));
                     }
-                while(err == KErrLocked);
-                StartWatchingFepKeysL();
+                if (settings.iInputTxtLang != KErrNotFound)
+                    {
+                    User::LeaveIfError(iFepRepository->Set(KAknFepInputTxtLang, settings.iInputTxtLang));
+                    }
+                if (settings.iJapanesePredTxtFlag != KErrNotFound)
+                    {
+                    User::LeaveIfError(iFepRepository->Set(KAknFepJapanesePredTxtFlag, settings.iJapanesePredTxtFlag));
+                    }
+                if (settings.iPredTxtFlag != KErrNotFound)
+                    {
+                    User::LeaveIfError(iFepRepository->Set(KAknFepPredTxtFlag, settings.iPredTxtFlag));
+                    }
+                if (settings.iCangJieMode != KErrNotFound)
+                    {
+                    User::LeaveIfError(iFepRepository->Set(KAknFepCangJieMode, settings.iCangJieMode));
+                    }
+                err = iFepRepository->CommitTransaction(keyInfo);
+                __ASSERT_ALWAYS(err == KErrNone || err == KErrLocked, User::Leave(err));
                 }
-            else
+            while(err == KErrLocked);
+            if (keyInfo > 0)
                 {
-                // remove corrupted value
-                User::LeaveIfError(iRepository->Delete(uid.iUid));
+                TInt focusedWg = iForegroundAppWatcher->WsSession().GetFocusWindowGroup();
+                TWsEvent event;
+                event.SetType(KEikInputLanguageChange);
+                User::LeaveIfError(iForegroundAppWatcher->WsSession().SendEventToWindowGroup(focusedWg, event));
+                RNotifier notif;
+                User::LeaveIfError(notif.Connect());
+                CleanupClosePushL(notif);
+                TUid uid = {KKeypadBuddyNotifierUidValue};
+                User::LeaveIfError(notif.StartNotifier(uid, KNullDesC8));
+                CleanupStack::PopAndDestroy(&notif);
                 }
+            StartWatchingFepKeysL();
+            CleanupStack::PopAndDestroy(&in);
             }
-        // no specific settings setup by the user
+        // no else, no settings saved
+        CleanupStack::PopAndDestroy(fileStore);
         }
     // no else, no tracking of applications without UID3
     }
@@ -155,26 +178,72 @@ void CKeypadBuddyServer::InputMethodSettingsChangedL()
     if (uid != TUid::Null())
         {
         TInputMethodSettings settings;
-        User::LeaveIfError(iFepRepository->Get(KAknFepChineseInputMode, settings.iChineseInputMode));
-        User::LeaveIfError(iFepRepository->Get(KAknFepInputTxtLang, settings.iInputTxtLang));
-        User::LeaveIfError(iFepRepository->Get(KAknFepJapanesePredTxtFlag, settings.iJapanesePredTxtFlag));
-        User::LeaveIfError(iFepRepository->Get(KAknFepPredTxtFlag, settings.iPredTxtFlag));
-        User::LeaveIfError(iFepRepository->Get(KAknFepCangJieMode, settings.iCangJieMode));
-        TInputMethodSettingsBuffer buffer;
-        settings.Format(buffer);
-        User::LeaveIfError(iRepository->Set(uid.iUid, buffer));
+        if (KErrNone != iFepRepository->Get(KAknFepChineseInputMode, settings.iChineseInputMode))
+            {
+            settings.iChineseInputMode = KErrNotFound;
+            }
+        if (KErrNone != iFepRepository->Get(KAknFepInputTxtLang, settings.iInputTxtLang))
+            {
+            settings.iInputTxtLang = KErrNotFound;
+            }
+        if (KErrNone != iFepRepository->Get(KAknFepJapanesePredTxtFlag, settings.iJapanesePredTxtFlag))
+            {
+            settings.iJapanesePredTxtFlag = KErrNotFound;
+            }
+        if (KErrNone != iFepRepository->Get(KAknFepPredTxtFlag, settings.iPredTxtFlag))
+            {
+            settings.iPredTxtFlag = KErrNotFound;
+            }
+        if (KErrNone != iFepRepository->Get(KAknFepCangJieMode, settings.iCangJieMode))
+            {
+            settings.iCangJieMode = KErrNotFound;
+            }
+        TFileName privatePath;
+        User::LeaveIfError(GetCacheFilePath(privatePath));
+        RProcess me;
+        CDictionaryFileStore* fileStore = CDictionaryFileStore::OpenLC(iFs, privatePath, me.SecureId());
+        RDictionaryWriteStream out;
+        out.AssignLC(*fileStore, uid);
+        settings.SaveL(out);
+        fileStore->CommitL();
+        CleanupStack::PopAndDestroy(2, fileStore);
         }
     // no else, no tracking for applications without UID3
     }
 
-CRepository& CKeypadBuddyServer::Repository()
+TInt CKeypadBuddyServer::GetCacheFilePath(TFileName& aFileName)
     {
-    return *iRepository;
+    RProcess me;
+    TBuf<2> drive = me.FileName().Left(2);
+    if (drive.CompareF(_L("z:")) == 0)
+        {
+        drive = _L("c:");
+        }
+    TInt ret = iFs.PrivatePath(aFileName);
+    if (KErrNone == ret)
+        {
+        aFileName.Insert(0, drive);
+        ret = iFs.MkDirAll(aFileName);
+        if (KErrAlreadyExists == ret)
+            {
+            ret = KErrNone;
+            }
+        if (KErrNone == ret)
+            {
+            aFileName.Append(KCacheFileName);
+            }
+        }
+    return ret;
     }
 
 CRepository& CKeypadBuddyServer::FepRepository()
     {
     return *iFepRepository;
+    }
+
+void CKeypadBuddyServer::ResetCacheL()
+    {
+    User::LeaveIfError(iFs.Delete(KCacheFileName));
     }
 
 void CKeypadBuddyServer::StartWatchingFepKeysL()
@@ -196,10 +265,9 @@ void CKeypadBuddyServer::CancelWatchingFepKeys()
     }
 
 
-
-
 void RunServerL()
     {
+    RDebug::Print(_L("Test rdebug print"));
     CActiveScheduler* scheduler = new ( ELeave ) CActiveScheduler();
     CleanupStack::PushL( scheduler );
     CActiveScheduler::Install( scheduler );

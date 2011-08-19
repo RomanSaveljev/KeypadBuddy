@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name		: KeypadBuddyApplication.h
- Author	  : 
+ Author	  :
  Copyright   : Your copyright notice
  Description : Declares main application class.
  ============================================================================
@@ -13,13 +13,6 @@
 // INCLUDES
 #include <aknapp.h>
 #include "KeypadBuddy.hrh"
-
-// UID for the application;
-// this should correspond to the uid defined in the mmp file
-const TUid KUidKeypadBuddyApp =
-    {
-    _UID3
-    };
 
 // CLASS DECLARATION
 

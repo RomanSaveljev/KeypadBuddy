@@ -1,8 +1,8 @@
-TARGET KeypadBuddyMonitor.exe
+TARGET keypadbuddymonitor.exe
 TARGETTYPE exe
 UID 0 0x20057507
 
-CAPABILITY SwEvent
+//CAPABILITY SwEvent
 
 SOURCEPATH      ../src/monitor
 SOURCE          KeypadBuddyServer.cpp
@@ -20,3 +20,6 @@ LIBRARY         euser.lib
 LIBRARY         centralrepository.lib
 LIBRARY         ws32.lib
 LIBRARY         apgrfx.lib
+LIBRARY         efsrv.lib
+LIBRARY         estor.lib
+LIBRARY         aknnotify.lib

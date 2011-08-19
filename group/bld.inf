@@ -11,6 +11,8 @@
 PRJ_PLATFORMS
 WINSCW ARMV5 GCCE
 
+#ifdef SBSV2
+
 PRJ_EXTENSIONS
 
 	START EXTENSION s60/mifconv
@@ -20,11 +22,18 @@ PRJ_EXTENSIONS
 	OPTION SOURCES -c32 icon
 	END
 
+#else
+
+PRJ_MMPFILES
+
+	gnumakefile icons_scalable_dc.mk
+
+#endif
+
 PRJ_MMPFILES
 
 KeypadBuddy.mmp
 KeypadBuddyMonitor.mmp
+KeypadBuddyNotifier.mmp
 
 PRJ_EXPORTS
-../data/20057507.txt            /epoc32/release/winscw/udeb/z/private/10202be9/20057507.txt
-../data/20057507.txt            /epoc32/data/z/private/10202be9/20057507.txt

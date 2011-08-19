@@ -11,9 +11,10 @@
 #include "KeypadBuddy.rls"
 #include <appinfo.rh>
 #include <keypadbuddy.rsg>
+#include "keypadbuddyuids.hrh"
 
 UID2 KUidAppRegistrationResourceFile
-UID3 _UID3
+UID3 KKeypadBuddyUidValue
 
 RESOURCE APP_REGISTRATION_INFO
 	{

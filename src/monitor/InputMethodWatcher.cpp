@@ -32,10 +32,9 @@ TInt CInputMethodWatcher::DoWatchKey()
 
 void CInputMethodWatcher::RunL()
     {
-    // if error, no more notifications are requested
-    DoWatchKey();
-    if (KErrNone == iStatus.Int())
+    if (iStatus.Int() >= 0)
         {
+        DoWatchKey();
         iServer.InputMethodSettingsChanged();
         }
     }
