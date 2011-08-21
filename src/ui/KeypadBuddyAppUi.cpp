@@ -21,6 +21,8 @@
 #include "KeypadBuddyApplication.h"
 #include "KeypadBuddyAppUi.h"
 #include "KeypadBuddyAppView.h"
+#include "KeypadBuddyEmptyView.h"
+#include <avkon.rsg>
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -34,18 +36,23 @@ void CKeypadBuddyAppUi::ConstructL()
     {
     // Initialise app UI with standard value.
     BaseConstructL(CAknAppUi::EAknEnableSkin|CAknAppUi::EAppOrientationPortrait);
-
-    iEngine = CKeypadBuddyEngine::NewL(*this);
-    // Create view object
-    iAppView = CKeypadBuddyAppView::NewL(ClientRect());
-
+    if (iRestoreLanguage)
+        {
+        User::Leave(KErrArgument);
+        }
+    else
+        {
+        iEngine = CKeypadBuddyEngine::NewL(*this);
+        iAppView = CKeypadBuddyAppView::NewL(ClientRect());
+        }
     }
 // -----------------------------------------------------------------------------
 // CKeypadBuddyAppUi::CKeypadBuddyAppUi()
 // C++ default constructor can NOT contain any code, that might leave.
 // -----------------------------------------------------------------------------
 //
-CKeypadBuddyAppUi::CKeypadBuddyAppUi()
+CKeypadBuddyAppUi::CKeypadBuddyAppUi(TBool aRestoreLanguage) :
+    iRestoreLanguage(aRestoreLanguage)
     {
     // No implementation required
     }
@@ -59,6 +66,7 @@ CKeypadBuddyAppUi::~CKeypadBuddyAppUi()
     {
     delete iAppView;
     delete iEngine;
+    delete iEmptyView;
     }
 
 // -----------------------------------------------------------------------------
@@ -136,6 +144,15 @@ void CKeypadBuddyAppUi::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPa
         aMenuPane->SetItemDimmed(ECommandActivateMonitor, monitorActive);
         aMenuPane->SetItemDimmed(ECommandDeactivateMonitor, !monitorActive);
         aMenuPane->SetItemDimmed(ECommandResetCache, !monitorActive);
+        }
+    }
+
+void CKeypadBuddyAppUi::HandleForegroundEventL(TBool aForeground)
+    {
+    CAknAppUi::HandleForegroundEventL(aForeground);
+    if (!aForeground)
+        {
+        Exit();
         }
     }
 

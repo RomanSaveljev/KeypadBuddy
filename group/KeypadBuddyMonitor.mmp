@@ -1,6 +1,8 @@
+#include "../inc/KeypadBuddyUids.hrh"
+
 TARGET keypadbuddymonitor.exe
 TARGETTYPE exe
-UID 0 0x20057507
+UID 0 KKeypadBuddyMonitorUidValue
 
 //CAPABILITY SwEvent
 
@@ -23,3 +25,4 @@ LIBRARY         apgrfx.lib
 LIBRARY         efsrv.lib
 LIBRARY         estor.lib
 LIBRARY         aknnotify.lib
+LIBRARY         apparc.lib

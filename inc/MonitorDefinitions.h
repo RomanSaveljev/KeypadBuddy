@@ -13,4 +13,7 @@ enum TMonitorFunctions
     EMonitorResetCache
     };
 
+const TInt KArgumentSlot = 8;
+_LIT8(KLanguageRestore, "-languagerestore");
+
 #endif //MONITORDEFINITIONS_H

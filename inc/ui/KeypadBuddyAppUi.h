@@ -17,6 +17,7 @@
 
 // FORWARD DECLARATIONS
 class CKeypadBuddyAppView;
+class CKeypadBuddyEmptyView;
 
 // CLASS DECLARATION
 /**
@@ -40,7 +41,7 @@ public:
      * C++ default constructor. This needs to be public due to
      * the way the framework constructs the AppUi
      */
-    CKeypadBuddyAppUi();
+    CKeypadBuddyAppUi(TBool aCreateEmptyView);
 
     /**
      * ~CKeypadBuddyAppUi.
@@ -50,6 +51,9 @@ public:
 
     void MonitorDeactivated();
     void MonitorActivated();
+
+    void HandleForegroundEventL(TBool aForeground);
+
 private:
     // Functions from base classes
 
@@ -66,7 +70,6 @@ private:
      *  size is changed.
      */
     void HandleStatusPaneSizeChange();
-
     void DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPane);
 private:
     // Data
@@ -76,7 +79,9 @@ private:
      * Owned by CKeypadBuddyAppUi
      */
     CKeypadBuddyAppView* iAppView;
+    CKeypadBuddyEmptyView* iEmptyView;
     CKeypadBuddyEngine* iEngine;
+    TBool iRestoreLanguage;
     };
 
 #endif // __KEYPADBUDDYAPPUI_h__

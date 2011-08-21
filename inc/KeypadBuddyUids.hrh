@@ -1,8 +1,14 @@
 #ifndef KEYPADBUDDYUIDS_HRH
 #define KEYPADBUDDYUIDS_HRH
 
+#ifdef USE_PROTECTED
 #define KKeypadBuddyUidValue             0x20057BEB
 #define KKeypadBuddyMonitorUidValue      0x20057507
 #define KKeypadBuddyNotifierUidValue     0x20057BEC
+#else
+#define KKeypadBuddyUidValue             0xe1792447
+#define KKeypadBuddyMonitorUidValue      0xe1792448
+#define KKeypadBuddyNotifierUidValue     0xe1792449
+#endif
 
 #endif //KEYPADBUDDYUIDS_HRH

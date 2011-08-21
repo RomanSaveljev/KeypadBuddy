@@ -9,6 +9,8 @@
 
 #include "../inc/keypadbuddyuids.hrh"
 
+EPOCSTACKSIZE   16384
+
 TARGET			KeypadBuddy.exe
 TARGETTYPE		exe
 UID		  0x100039CE KKeypadBuddyUidValue
@@ -20,6 +22,7 @@ SOURCE			KeypadBuddyAppView.cpp
 SOURCE			KeypadBuddyAppUi.cpp
 SOURCE			KeypadBuddyDocument.cpp
 SOURCE          KeypadBuddyEngine.cpp
+SOURCE          KeypadBuddyEmptyView.cpp
 
 USERINCLUDE    ..\inc\ui
 USERINCLUDE    ..\inc

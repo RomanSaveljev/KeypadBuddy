@@ -9,6 +9,8 @@
 #include <APGTASK.H>
 #include <aknglobalnote.h>
 #include "KeypadBuddyUids.hrh"
+#include <apgcli.h>
+#include <apacmdln.h>
 
 const TUid KCRUidAknFep = { 0x101F876D };
 const TUint32 KAknFepChineseInputMode = 0x00000004;
@@ -103,7 +105,7 @@ void CKeypadBuddyServer::ForegroundApplicationChanged()
 void CKeypadBuddyServer::ForegroundApplicationChangedL()
     {
     TUid uid = iForegroundAppWatcher->ForegroundAppL();
-    if (uid != TUid::Null())
+    if (uid != TUid::Null() && uid.iUid != (TInt32)KKeypadBuddyUidValue)
         {
         TFileName privatePath;
         User::LeaveIfError(GetCacheFilePath(privatePath));
@@ -151,12 +153,41 @@ void CKeypadBuddyServer::ForegroundApplicationChangedL()
                 TWsEvent event;
                 event.SetType(KEikInputLanguageChange);
                 User::LeaveIfError(iForegroundAppWatcher->WsSession().SendEventToWindowGroup(focusedWg, event));
+                /*
                 RNotifier notif;
                 User::LeaveIfError(notif.Connect());
                 CleanupClosePushL(notif);
                 TUid uid = {KKeypadBuddyNotifierUidValue};
                 User::LeaveIfError(notif.StartNotifier(uid, KNullDesC8));
                 CleanupStack::PopAndDestroy(&notif);
+                */
+                /*
+                RApaLsSession session;
+                User::LeaveIfError(session.Connect());
+                CleanupClosePushL(session);
+                CApaCommandLine* cmd = CApaCommandLine::NewLC();
+                cmd->SetCommandL(EApaCommandOpen);
+                cmd->SetExecutableNameL(_L("keypadbuddy.exe"));
+                cmd->SetTailEndL(_L8("-languagerestore"));
+                User::LeaveIfError(session.StartApp(*cmd));
+                CleanupStack::PopAndDestroy(cmd);
+                CleanupStack::PopAndDestroy(&session);
+                */
+                RProcess proc;
+                User::LeaveIfError(proc.Create(_L("keypadbuddy.exe"), KNullDesC));
+                CleanupClosePushL(proc);
+                User::LeaveIfError(proc.SetParameter(KArgumentSlot, KLanguageRestore));
+                TRequestStatus logonStatus = KRequestPending;
+                proc.Logon(logonStatus);
+                proc.Resume();
+                User::WaitForRequest(logonStatus);
+                CleanupStack::PopAndDestroy(&proc);
+                //User::After(400000);
+                //TApaTaskList taskList(iForegroundAppWatcher->WsSession());
+                //TUid uid = {KKeypadBuddyUidValue};
+                //TApaTask task = taskList.FindApp(uid);
+                //__ASSERT_ALWAYS(task.Exists(), User::Leave(KErrNotFound));
+                //task.SendToBackground(); // KeypadBuddy UI will destroy itself
                 }
             StartWatchingFepKeysL();
             CleanupStack::PopAndDestroy(&in);
@@ -175,7 +206,7 @@ void CKeypadBuddyServer::InputMethodSettingsChanged()
 void CKeypadBuddyServer::InputMethodSettingsChangedL()
     {
     TUid uid = iForegroundAppWatcher->ForegroundAppL();
-    if (uid != TUid::Null())
+    if (uid != TUid::Null() && uid.iUid != (TInt32)KKeypadBuddyUidValue)
         {
         TInputMethodSettings settings;
         if (KErrNone != iFepRepository->Get(KAknFepChineseInputMode, settings.iChineseInputMode))

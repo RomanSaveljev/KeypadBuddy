@@ -10,7 +10,8 @@
 &EN
 
 ; standard SIS file header
-#{"KeypadBuddy"},(0x20057BEB),1,0,0
+;#{"KeypadBuddy"},(0x20057BEB),1,0,0
+#{"KeypadBuddy"},(0xA0011633),1,0,0
 
 ;Localised Vendor name
 %{"Vendor-EN"}
@@ -26,13 +27,15 @@
 ;You should change the source paths to match that of your environment
 ;<source> <destination>
 "$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\KeypadBuddy.exe"		-"!:\sys\bin\KeypadBuddy.exe"
-"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\KeypadBuddyMonitor.exe"       -"!:\sys\bin\keypadbuddymonitor.exe"
-"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\KeypadBuddyNotifier.dll"       -"!:\sys\bin\keypadbuddynotifier.dll"
 "$(EPOCROOT)epoc32\data\z\resource\apps\keypadbuddy.rsc"		-"!:\resource\apps\KeypadBuddy.rsc"
 "$(EPOCROOT)epoc32\data\z\private\10003a3f\apps\keypadbuddy_reg.rsc"	-"!:\private\10003a3f\import\apps\KeypadBuddy_reg.rsc"
 "$(EPOCROOT)epoc32\data\z\resource\apps\keypadbuddy_icon.mif" -"!:\resource\apps\KeypadBuddy_icon.mif"
 "$(EPOCROOT)epoc32\data\z\resource\apps\Keypadbuddy.mbm" -"!:\resource\apps\keypadbuddy.mbm"
-"$(EPOCROOT)epoc32\data\z\resource\plugins\Keypadbuddynotifier.rsc" -"!:\resource\plugins\keypadbuddynotifier.rsc"
+
+"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\KeypadBuddyMonitor.exe"       -"!:\sys\bin\keypadbuddymonitor.exe"
+
+;"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\KeypadBuddyNotifier.dll"       -"!:\sys\bin\keypadbuddynotifier.dll"
+;"$(EPOCROOT)epoc32\data\z\resource\plugins\Keypadbuddynotifier.rsc" -"!:\resource\plugins\keypadbuddynotifier.rsc"
 
 ;required for application to be covered by backup/restore facility
-"..\sis\backup_registration.xml"		-"!:\private\20057BEB\backup_registration.xml"
+;"..\sis\backup_registration.xml"		-"!:\private\20057BEB\backup_registration.xml"

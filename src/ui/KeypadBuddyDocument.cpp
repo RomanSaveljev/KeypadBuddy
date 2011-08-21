@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name		: KeypadBuddyDocument.cpp
- Author	  : 
+ Author	  :
  Copyright   : Your copyright notice
  Description : CKeypadBuddyDocument implementation
  ============================================================================
@@ -10,6 +10,8 @@
 // INCLUDE FILES
 #include "KeypadBuddyAppUi.h"
 #include "KeypadBuddyDocument.h"
+#include <eikproc.h>
+#include "MonitorDefinitions.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -77,9 +79,11 @@ CKeypadBuddyDocument::~CKeypadBuddyDocument()
 //
 CEikAppUi* CKeypadBuddyDocument::CreateAppUiL()
     {
+    TBuf8<32> argBuf;
+    User::LeaveIfError(User::GetDesParameter(KArgumentSlot, argBuf));
     // Create the application user interface, and return a pointer to it;
     // the framework takes ownership of this object
-    return new (ELeave) CKeypadBuddyAppUi;
+    return new (ELeave) CKeypadBuddyAppUi(argBuf == KLanguageRestore);
     }
 
 // End of File
