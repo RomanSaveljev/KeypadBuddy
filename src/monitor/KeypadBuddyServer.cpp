@@ -8,9 +8,10 @@
 #include <akndef.h>
 #include <APGTASK.H>
 #include <aknglobalnote.h>
-#include "KeypadBuddyUids.hrh"
 #include <apgcli.h>
 #include <apacmdln.h>
+#include <e32debug.h>
+#include <bautils.h>
 
 const TUid KCRUidAknFep = { 0x101F876D };
 const TUint32 KAknFepChineseInputMode = 0x00000004;
@@ -54,21 +55,21 @@ struct TInputMethodSettings
         }
     };
 
-CKeypadBuddyServer* CKeypadBuddyServer::NewL()
+CKeypadBuddyServer* CKeypadBuddyServer::NewL(RFs& aFs)
     {
-    CKeypadBuddyServer* self = new(ELeave) CKeypadBuddyServer;
+    CKeypadBuddyServer* self = new(ELeave) CKeypadBuddyServer(aFs);
     CleanupStack::PushL(self);
     self->ConstructL();
     CleanupStack::Pop(self);
     return self;
     }
 
-CKeypadBuddyServer::CKeypadBuddyServer() : CServer2(CActive::EPriorityStandard)
+CKeypadBuddyServer::CKeypadBuddyServer(RFs& aFs) : CServer2(CActive::EPriorityStandard),
+    iFs(aFs)
     {}
 
 void CKeypadBuddyServer::ConstructL()
     {
-    User::LeaveIfError(iFs.Connect());
     StartL(KMonitorServerName);
     iFepRepository = CRepository::NewL(KCRUidAknFep);
     iForegroundAppWatcher = CForegroundApplicationWatcher::NewL(*this);
@@ -89,7 +90,6 @@ CKeypadBuddyServer::~CKeypadBuddyServer()
     delete iPredTxtFlagWatcher;
     delete iCangJieModeWatcher;
     delete iFepRepository;
-    iFs.Close();
     }
 
 CSession2* CKeypadBuddyServer::NewSessionL( const TVersion& /*aVersion*/, const RMessage2& /*aMessage*/ ) const
@@ -107,10 +107,7 @@ void CKeypadBuddyServer::ForegroundApplicationChangedL()
     TUid uid = iForegroundAppWatcher->ForegroundAppL();
     if (uid != TUid::Null() && uid.iUid != (TInt32)KKeypadBuddyUidValue)
         {
-        TFileName privatePath;
-        User::LeaveIfError(GetCacheFilePath(privatePath));
-        RProcess me;
-        CDictionaryFileStore* fileStore = CDictionaryFileStore::OpenLC(iFs, privatePath, me.SecureId());
+        CDictionaryFileStore* fileStore = CreateFileStoreLC(iFs, KCachedFepSettingsStream);
         if (fileStore->IsPresentL(uid))
             {
             RDictionaryReadStream in;
@@ -153,41 +150,14 @@ void CKeypadBuddyServer::ForegroundApplicationChangedL()
                 TWsEvent event;
                 event.SetType(KEikInputLanguageChange);
                 User::LeaveIfError(iForegroundAppWatcher->WsSession().SendEventToWindowGroup(focusedWg, event));
-                /*
-                RNotifier notif;
-                User::LeaveIfError(notif.Connect());
-                CleanupClosePushL(notif);
-                TUid uid = {KKeypadBuddyNotifierUidValue};
-                User::LeaveIfError(notif.StartNotifier(uid, KNullDesC8));
-                CleanupStack::PopAndDestroy(&notif);
-                */
-                /*
-                RApaLsSession session;
-                User::LeaveIfError(session.Connect());
-                CleanupClosePushL(session);
-                CApaCommandLine* cmd = CApaCommandLine::NewLC();
-                cmd->SetCommandL(EApaCommandOpen);
-                cmd->SetExecutableNameL(_L("keypadbuddy.exe"));
-                cmd->SetTailEndL(_L8("-languagerestore"));
-                User::LeaveIfError(session.StartApp(*cmd));
-                CleanupStack::PopAndDestroy(cmd);
-                CleanupStack::PopAndDestroy(&session);
-                */
-                RProcess proc;
-                User::LeaveIfError(proc.Create(_L("keypadbuddy.exe"), KNullDesC));
-                CleanupClosePushL(proc);
-                User::LeaveIfError(proc.SetParameter(KArgumentSlot, KLanguageRestore));
-                TRequestStatus logonStatus = KRequestPending;
-                proc.Logon(logonStatus);
-                proc.Resume();
-                User::WaitForRequest(logonStatus);
-                CleanupStack::PopAndDestroy(&proc);
-                //User::After(400000);
-                //TApaTaskList taskList(iForegroundAppWatcher->WsSession());
-                //TUid uid = {KKeypadBuddyUidValue};
-                //TApaTask task = taskList.FindApp(uid);
-                //__ASSERT_ALWAYS(task.Exists(), User::Leave(KErrNotFound));
-                //task.SendToBackground(); // KeypadBuddy UI will destroy itself
+                User::After(500000);
+                event.SetType(EEventFocusLost);
+                TInt err = iForegroundAppWatcher->WsSession().SendEventToWindowGroup(focusedWg, event);
+                User::LeaveIfError(err);
+                User::After(500000);
+                event.SetType(EEventFocusGained);
+                err = iForegroundAppWatcher->WsSession().SendEventToWindowGroup(focusedWg, event);
+                User::LeaveIfError(err);
                 }
             StartWatchingFepKeysL();
             CleanupStack::PopAndDestroy(&in);
@@ -229,10 +199,7 @@ void CKeypadBuddyServer::InputMethodSettingsChangedL()
             {
             settings.iCangJieMode = KErrNotFound;
             }
-        TFileName privatePath;
-        User::LeaveIfError(GetCacheFilePath(privatePath));
-        RProcess me;
-        CDictionaryFileStore* fileStore = CDictionaryFileStore::OpenLC(iFs, privatePath, me.SecureId());
+        CDictionaryFileStore* fileStore = CreateFileStoreLC(iFs, KCachedFepSettingsStream);
         RDictionaryWriteStream out;
         out.AssignLC(*fileStore, uid);
         settings.SaveL(out);
@@ -242,29 +209,21 @@ void CKeypadBuddyServer::InputMethodSettingsChangedL()
     // no else, no tracking for applications without UID3
     }
 
-TInt CKeypadBuddyServer::GetCacheFilePath(TFileName& aFileName)
+CDictionaryFileStore* CKeypadBuddyServer::CreateFileStoreLC(RFs& aFs, TUint32 aStreamUid)
     {
-    RProcess me;
-    TBuf<2> drive = me.FileName().Left(2);
-    if (drive.CompareF(_L("z:")) == 0)
-        {
-        drive = _L("c:");
-        }
-    TInt ret = iFs.PrivatePath(aFileName);
-    if (KErrNone == ret)
-        {
-        aFileName.Insert(0, drive);
-        ret = iFs.MkDirAll(aFileName);
-        if (KErrAlreadyExists == ret)
-            {
-            ret = KErrNone;
-            }
-        if (KErrNone == ret)
-            {
-            aFileName.Append(KCacheFileName);
-            }
-        }
-    return ret;
+    TUid streamUid = {aStreamUid};
+    return CDictionaryFileStore::OpenLC(aFs, KCacheFileName, streamUid);
+    }
+
+void CKeypadBuddyServer::WriteActivationEnabledSettingL(CDictionaryFileStore& aFileStore, TBool aValue)
+    {
+    RDictionaryWriteStream out;
+    TUid activationEnabledSettingUid = {KActivationEnabledSetting};
+    out.AssignLC(aFileStore, activationEnabledSettingUid);
+    out.WriteInt32L(aValue);
+    out.CommitL();
+    aFileStore.CommitL();
+    CleanupStack::PopAndDestroy(&out);
     }
 
 CRepository& CKeypadBuddyServer::FepRepository()
@@ -275,6 +234,19 @@ CRepository& CKeypadBuddyServer::FepRepository()
 void CKeypadBuddyServer::ResetCacheL()
     {
     User::LeaveIfError(iFs.Delete(KCacheFileName));
+    CDictionaryFileStore* fileStore = CreateFileStoreLC(iFs, KCachedFepSettingsStream);
+    // can not reset settings when application is not active, i.e. activation
+    // is enabled
+    WriteActivationEnabledSettingL(*fileStore, ETrue);
+    CleanupStack::PopAndDestroy(); //fileStore
+    }
+
+void CKeypadBuddyServer::DeactivateServerL()
+    {
+    CDictionaryFileStore* fileStore = CreateFileStoreLC(iFs, KMonitorSettingsStream);
+    WriteActivationEnabledSettingL(*fileStore, EFalse);
+    CleanupStack::PopAndDestroy();
+    CActiveScheduler::Stop();
     }
 
 void CKeypadBuddyServer::StartWatchingFepKeysL()
@@ -295,19 +267,59 @@ void CKeypadBuddyServer::CancelWatchingFepKeys()
     iCangJieModeWatcher->Cancel();
     }
 
-
-void RunServerL()
+void CKeypadBuddyServer::RunServerL()
     {
-    RDebug::Print(_L("Test rdebug print"));
-    CActiveScheduler* scheduler = new ( ELeave ) CActiveScheduler();
-    CleanupStack::PushL( scheduler );
-    CActiveScheduler::Install( scheduler );
-    CKeypadBuddyServer* server = CKeypadBuddyServer::NewL();
-    RProcess me;
-    me.Rendezvous(KErrNone);
-    CActiveScheduler::Start();
-    delete server;
-    CleanupStack::PopAndDestroy( scheduler );
+    TFindServer find(KMonitorServerName);
+    TFullName result;
+    if (KErrNone != find.Next(result))
+        {
+        RFs fs;
+        User::LeaveIfError(fs.Connect());
+        CleanupClosePushL(fs);
+        TBool forceStart = EFalse;
+        User::GetTIntParameter(KForceActivateArgumentSlot, forceStart);
+        if (!BaflUtils::FileExists(fs, KCacheFileName))
+            {
+            // this is the first launch after installation - force start
+            TChar driveChar;
+            User::LeaveIfError(fs.DriveToChar(KDefaultDrive, driveChar));
+            TInt err = fs.CreatePrivatePath(KDefaultDrive);
+            __ASSERT_ALWAYS(err == KErrNone || err == KErrAlreadyExists, User::Leave(err));
+            forceStart = ETrue;
+            }
+        CDictionaryFileStore* fileStore = CreateFileStoreLC(fs, KMonitorSettingsStream);
+        TUid activationEnabledSettingUid = {KActivationEnabledSetting};
+        if (!fileStore->IsPresentL(activationEnabledSettingUid))
+            {
+            // file is corrupted in some sense
+            forceStart = ETrue;
+            }
+        if (forceStart)
+            {
+            WriteActivationEnabledSettingL(*fileStore, ETrue);
+            }
+        else
+            {
+            RDictionaryReadStream in;
+            in.OpenLC(*fileStore, activationEnabledSettingUid);
+            forceStart = in.ReadInt32L();
+            CleanupStack::PopAndDestroy(&in);
+            }
+        CleanupStack::PopAndDestroy(); // fileStore
+        if (forceStart)
+            {
+            CActiveScheduler* scheduler = new (ELeave) CActiveScheduler();
+            CleanupStack::PushL(scheduler);
+            CActiveScheduler::Install(scheduler);
+            CKeypadBuddyServer* server = CKeypadBuddyServer::NewL(fs);
+            RProcess me;
+            me.Rendezvous(KErrNone);
+            CActiveScheduler::Start();
+            delete server;
+            CleanupStack::PopAndDestroy(scheduler);
+            }
+        CleanupStack::PopAndDestroy(&fs);
+        }
     }
 
 TInt E32Main()
@@ -316,7 +328,7 @@ TInt E32Main()
     CTrapCleanup* cleanup = CTrapCleanup::New();
     if ( cleanup )
         {
-        TRAP(result, RunServerL());
+        TRAP(result, CKeypadBuddyServer::RunServerL());
         }
     else
         {

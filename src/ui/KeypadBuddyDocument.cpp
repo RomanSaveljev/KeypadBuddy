@@ -12,6 +12,8 @@
 #include "KeypadBuddyDocument.h"
 #include <eikproc.h>
 #include "MonitorDefinitions.h"
+#include "KeypadBuddyApplication.h"
+#include "KeypadBuddyAppUiLanguageRestore.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -79,11 +81,15 @@ CKeypadBuddyDocument::~CKeypadBuddyDocument()
 //
 CEikAppUi* CKeypadBuddyDocument::CreateAppUiL()
     {
-    TBuf8<32> argBuf;
-    User::LeaveIfError(User::GetDesParameter(KArgumentSlot, argBuf));
-    // Create the application user interface, and return a pointer to it;
-    // the framework takes ownership of this object
-    return new (ELeave) CKeypadBuddyAppUi(argBuf == KLanguageRestore);
+    CKeypadBuddyApplication* application = static_cast<CKeypadBuddyApplication*>(Application());
+    if (application->LanguageRestore())
+        {
+        return new (ELeave) CKeypadBuddyAppUiLanguageRestore();
+        }
+    else
+        {
+        return new (ELeave) CKeypadBuddyAppUi();
+        }
     }
 
 // End of File

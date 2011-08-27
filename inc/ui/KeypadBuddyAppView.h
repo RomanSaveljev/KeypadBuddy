@@ -15,6 +15,8 @@
 #include <eikimage.h>
 #include <eikmenup.h>
 
+class CAknsBasicBackgroundControlContext;
+
 // CLASS DECLARATION
 class CKeypadBuddyAppView : public CCoeControl
     {
@@ -28,7 +30,7 @@ public:
      * @param aRect The rectangle this view will be drawn to.
      * @return a pointer to the created instance of CKeypadBuddyAppView.
      */
-    static CKeypadBuddyAppView* NewL(const TRect& aRect);
+    static CKeypadBuddyAppView* NewL(const TRect& aRect, TBool aMonitorActive);
 
     /**
      * NewLC.
@@ -38,7 +40,7 @@ public:
      * @param aRect Rectangle this view will be drawn to.
      * @return A pointer to the created instance of CKeypadBuddyAppView.
      */
-    static CKeypadBuddyAppView* NewLC(const TRect& aRect);
+    static CKeypadBuddyAppView* NewLC(const TRect& aRect, TBool aMonitorActive);
 
     /**
      * ~CKeypadBuddyAppView
@@ -76,6 +78,8 @@ public:
     TInt CountComponentControls() const;
     CCoeControl* ComponentControl(TInt aIndex) const;
     void DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPane);
+
+    TTypeUid::Ptr MopSupplyObject(TTypeUid aId);
 private:
     // Constructors
 
@@ -92,7 +96,7 @@ private:
      * CKeypadBuddyAppView.
      * C++ default constructor.
      */
-    CKeypadBuddyAppView();
+    CKeypadBuddyAppView(TBool aMonitorActive);
 
     void SizeChangedL(TBool aMonitorActive);
 
@@ -101,6 +105,7 @@ private:
     CFbsBitmap* iMask;
     CEikImage* iImage;
     CEikMenuPane* iMenuPane;
+    CAknsBasicBackgroundControlContext* iBgContext;
     };
 
 #endif // __KEYPADBUDDYAPPVIEW_h__

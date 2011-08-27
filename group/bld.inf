@@ -11,6 +11,8 @@
 PRJ_PLATFORMS
 WINSCW ARMV5 GCCE
 
+//#define SBSV2
+
 #ifdef SBSV2
 
 PRJ_EXTENSIONS
@@ -18,7 +20,7 @@ PRJ_EXTENSIONS
 	START EXTENSION s60/mifconv
 	OPTION TARGETFILE keypadbuddy_icon.mif
 	OPTION HEADERFILE keypadbuddy_icon.mbg
-	OPTION SOURCEDIR ../gfx
+	OPTION SOURCEDIR ../gfx/svgt
 	OPTION SOURCES -c32 icon
 	END
 
@@ -34,6 +36,5 @@ PRJ_MMPFILES
 
 KeypadBuddy.mmp
 KeypadBuddyMonitor.mmp
-KeypadBuddyNotifier.mmp
 
 PRJ_EXPORTS

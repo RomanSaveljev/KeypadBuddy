@@ -16,7 +16,7 @@ endif
 TARGETDIR=$(ZDIR)\resource\apps
 ICONTARGETFILENAME=$(TARGETDIR)\keypadbuddy_icon.mif
 
-ICONDIR=..\gfx
+ICONDIR=..\gfx\svgt
 
 do_nothing :
 	@rem do_nothing

@@ -73,10 +73,8 @@ void CKeypadBuddyEngine::SetMonitorActiveL(TBool aActive)
             {
             if (!IsActive())
                 {
-
-                TInt err = iMonitor.Create(KMonitorServerFileName, KNullDesC, TUidType(KExecutableImageUid, TUid::Null(), TUid::Null()));
-                //TInt err = iMonitor.Create(_L("about.exe"), KNullDesC);
-                User::LeaveIfError(err);
+                User::LeaveIfError(iMonitor.Create(KMonitorServerFileName, KNullDesC, TUidType(KExecutableImageUid, TUid::Null(), TUid::Null())));
+                User::LeaveIfError(iMonitor.SetParameter(KForceActivateArgumentSlot, ETrue));
                 iStatus = KRequestPending;
                 iMonitor.Rendezvous(iStatus);
                 iMonitor.Resume();

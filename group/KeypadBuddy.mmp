@@ -15,6 +15,8 @@ TARGET			KeypadBuddy.exe
 TARGETTYPE		exe
 UID		  0x100039CE KKeypadBuddyUidValue
 
+CAPABILITY      WriteDeviceData ReadDeviceData
+
 SOURCEPATH		..\src\ui
 SOURCE			KeypadBuddy.cpp
 SOURCE			KeypadBuddyApplication.cpp
@@ -22,11 +24,14 @@ SOURCE			KeypadBuddyAppView.cpp
 SOURCE			KeypadBuddyAppUi.cpp
 SOURCE			KeypadBuddyDocument.cpp
 SOURCE          KeypadBuddyEngine.cpp
-SOURCE          KeypadBuddyEmptyView.cpp
+SOURCE          KeypadBuddyAppUiLanguageRestore.cpp
 
 USERINCLUDE    ..\inc\ui
 USERINCLUDE    ..\inc
 SYSTEMINCLUDE  \epoc32\include
+SYSTEMINCLUDE   \epoc32\include\mw
+SYSTEMINCLUDE   \epoc32\include\platform
+SYSTEMINCLUDE   \epoc32\include\platform\mw
 
 SOURCEPATH		..\data
 
@@ -53,7 +58,8 @@ LIBRARY        hlplch.lib
 LIBRARY        eikcoctl.lib
 LIBRARY        fbscli.lib
 LIBRARY        aknicon.lib
-
+LIBRARY        aknskins.lib aknskinsrv.lib aknswallpaperutils.lib
+LIBRARY        fepbase.lib
 
 LANG SC
 
@@ -65,6 +71,6 @@ START BITMAP KeypadBuddy.mbm
 	TARGETPATH resource\apps
 	HEADER
 	SOURCEPATH ..\gfx
-	SOURCE c16 button_inactive.bmp button_active.bmp
-	SOURCE 1 button_mask.bmp
+	SOURCE c24 button_inactive.bmp button_active.bmp
+	SOURCE 8 button_mask.bmp
 END

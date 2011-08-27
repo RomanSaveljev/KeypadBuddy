@@ -17,7 +17,6 @@
 
 // FORWARD DECLARATIONS
 class CKeypadBuddyAppView;
-class CKeypadBuddyEmptyView;
 
 // CLASS DECLARATION
 /**
@@ -37,13 +36,6 @@ public:
     void ConstructL();
 
     /**
-     * CKeypadBuddyAppUi.
-     * C++ default constructor. This needs to be public due to
-     * the way the framework constructs the AppUi
-     */
-    CKeypadBuddyAppUi(TBool aCreateEmptyView);
-
-    /**
      * ~CKeypadBuddyAppUi.
      * Virtual Destructor.
      */
@@ -54,7 +46,7 @@ public:
 
     void HandleForegroundEventL(TBool aForeground);
 
-private:
+public:
     // Functions from base classes
 
     /**
@@ -79,9 +71,7 @@ private:
      * Owned by CKeypadBuddyAppUi
      */
     CKeypadBuddyAppView* iAppView;
-    CKeypadBuddyEmptyView* iEmptyView;
     CKeypadBuddyEngine* iEngine;
-    TBool iRestoreLanguage;
     };
 
 #endif // __KEYPADBUDDYAPPUI_h__

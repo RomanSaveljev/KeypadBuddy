@@ -37,6 +37,7 @@ void CForegroundApplicationWatcher::ConstructL()
 
 CForegroundApplicationWatcher::~CForegroundApplicationWatcher()
     {
+    Cancel();
     iWg.Close();
     iWsSession.Close();
     }

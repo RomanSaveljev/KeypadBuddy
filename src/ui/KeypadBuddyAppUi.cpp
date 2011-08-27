@@ -21,7 +21,6 @@
 #include "KeypadBuddyApplication.h"
 #include "KeypadBuddyAppUi.h"
 #include "KeypadBuddyAppView.h"
-#include "KeypadBuddyEmptyView.h"
 #include <avkon.rsg>
 
 // ============================ MEMBER FUNCTIONS ===============================
@@ -36,25 +35,8 @@ void CKeypadBuddyAppUi::ConstructL()
     {
     // Initialise app UI with standard value.
     BaseConstructL(CAknAppUi::EAknEnableSkin|CAknAppUi::EAppOrientationPortrait);
-    if (iRestoreLanguage)
-        {
-        User::Leave(KErrArgument);
-        }
-    else
-        {
-        iEngine = CKeypadBuddyEngine::NewL(*this);
-        iAppView = CKeypadBuddyAppView::NewL(ClientRect());
-        }
-    }
-// -----------------------------------------------------------------------------
-// CKeypadBuddyAppUi::CKeypadBuddyAppUi()
-// C++ default constructor can NOT contain any code, that might leave.
-// -----------------------------------------------------------------------------
-//
-CKeypadBuddyAppUi::CKeypadBuddyAppUi(TBool aRestoreLanguage) :
-    iRestoreLanguage(aRestoreLanguage)
-    {
-    // No implementation required
+    iEngine = CKeypadBuddyEngine::NewL(*this);
+    iAppView = CKeypadBuddyAppView::NewL(ClientRect(), iEngine->MonitorActive());
     }
 
 // -----------------------------------------------------------------------------
@@ -66,7 +48,6 @@ CKeypadBuddyAppUi::~CKeypadBuddyAppUi()
     {
     delete iAppView;
     delete iEngine;
-    delete iEmptyView;
     }
 
 // -----------------------------------------------------------------------------

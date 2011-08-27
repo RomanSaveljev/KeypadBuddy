@@ -7,27 +7,31 @@
 
 class CForegroundApplicationWatcher;
 class CInputMethodWatcher;
+class CDictionaryFileStore;
 
 class CKeypadBuddyServer : public CServer2
     {
 public:
-    static CKeypadBuddyServer* NewL();
+    static CKeypadBuddyServer* NewL(RFs& aFs);
     ~CKeypadBuddyServer();
     CSession2* NewSessionL( const TVersion& aVersion, const RMessage2& aMessage ) const;
     void ForegroundApplicationChanged();
     void InputMethodSettingsChanged();
     CRepository& FepRepository();
     void ResetCacheL();
+    void DeactivateServerL();
+    static void RunServerL();
 private:
-    CKeypadBuddyServer();
+    CKeypadBuddyServer(RFs& aFs);
     void ConstructL();
     void ForegroundApplicationChangedL();
     void InputMethodSettingsChangedL();
     void StartWatchingFepKeysL();
     void CancelWatchingFepKeys();
-    TInt GetCacheFilePath(TFileName& aFileName);
+    static CDictionaryFileStore* CreateFileStoreLC(RFs& aFs, TUint32 aStreamUid);
+    static void WriteActivationEnabledSettingL(CDictionaryFileStore& aFileStore, TBool aValue);
 private:
-    RFs iFs;
+    RFs& iFs;
     TInt iLastError;
     CRepository* iFepRepository;
     CForegroundApplicationWatcher* iForegroundAppWatcher;

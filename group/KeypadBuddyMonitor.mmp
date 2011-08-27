@@ -4,13 +4,17 @@ TARGET keypadbuddymonitor.exe
 TARGETTYPE exe
 UID 0 KKeypadBuddyMonitorUidValue
 
-//CAPABILITY SwEvent
+CAPABILITY PowerMgmt SwEvent
 
 SOURCEPATH      ../src/monitor
 SOURCE          KeypadBuddyServer.cpp
 SOURCE          KeypadBuddySession.cpp
 SOURCE          InputMethodWatcher.cpp
 SOURCE          ForegroundApplicationWatcher.cpp
+
+SOURCEPATH      ../data
+START RESOURCE  StartupItem.rss
+END
 
 USERINCLUDE     ../inc/monitor
 USERINCLUDE     ../inc
@@ -26,3 +30,4 @@ LIBRARY         efsrv.lib
 LIBRARY         estor.lib
 LIBRARY         aknnotify.lib
 LIBRARY         apparc.lib
+LIBRARY         bafl.lib

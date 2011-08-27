@@ -27,11 +27,18 @@ class CKeypadBuddyApplication : public CAknApplication
 public:
     // Functions from base classes
 
+    CKeypadBuddyApplication();
+
     /**
      * From CApaApplication, AppDllUid.
      * @return Application's UID (KUidKeypadBuddyApp).
      */
     TUid AppDllUid() const;
+
+    inline TBool LanguageRestore() const
+        {
+        return iLanguageRestore;
+        }
 
 protected:
     // Functions from base classes
@@ -43,6 +50,11 @@ protected:
      * @return A pointer to the created document object.
      */
     CApaDocument* CreateDocumentL();
+
+    TFileName ResourceFileName() const;
+
+private:
+    TBool iLanguageRestore;
     };
 
 #endif // __KEYPADBUDDYAPPLICATION_H__

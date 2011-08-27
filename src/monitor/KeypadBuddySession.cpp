@@ -13,7 +13,7 @@ void CKeypadBuddySession::ServiceL(const RMessage2& aMessage)
         {
         case EMonitorDeactivate:
             {
-            CActiveScheduler::Stop();
+            iServer.DeactivateServerL();
             aMessage.Complete(KErrNone);
             break;
             }
