@@ -31,8 +31,7 @@ void CForegroundApplicationWatcher::ConstructL()
     CleanupStack::PopAndDestroy();
     User::LeaveIfError(iWg.EnableGroupChangeEvents());
     User::LeaveIfError(iWg.EnableFocusChangeEvents());
-    User::LeaveIfError(iWg.EnableGroupListChangeEvents());
-    Watch();
+    //User::LeaveIfError(iWg.EnableGroupListChangeEvents());
     }
 
 CForegroundApplicationWatcher::~CForegroundApplicationWatcher()
@@ -51,9 +50,9 @@ void CForegroundApplicationWatcher::Watch()
 
 void CForegroundApplicationWatcher::RunL()
     {
+    TWsEvent e;
     if (iStatus == KErrNone)
         {
-        TWsEvent e;
         iWsSession.GetEvent(e);
         }
     if (iStatus != KErrCancel)

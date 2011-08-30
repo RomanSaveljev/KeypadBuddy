@@ -30,7 +30,7 @@ public:
      * @param aRect The rectangle this view will be drawn to.
      * @return a pointer to the created instance of CKeypadBuddyAppView.
      */
-    static CKeypadBuddyAppView* NewL(const TRect& aRect, TBool aMonitorActive);
+    static CKeypadBuddyAppView* NewL(const TRect& aRect);
 
     /**
      * NewLC.
@@ -40,7 +40,7 @@ public:
      * @param aRect Rectangle this view will be drawn to.
      * @return A pointer to the created instance of CKeypadBuddyAppView.
      */
-    static CKeypadBuddyAppView* NewLC(const TRect& aRect, TBool aMonitorActive);
+    static CKeypadBuddyAppView* NewLC(const TRect& aRect);
 
     /**
      * ~CKeypadBuddyAppView
@@ -96,7 +96,7 @@ private:
      * CKeypadBuddyAppView.
      * C++ default constructor.
      */
-    CKeypadBuddyAppView(TBool aMonitorActive);
+    CKeypadBuddyAppView();
 
     void SizeChangedL(TBool aMonitorActive);
 

@@ -11,24 +11,193 @@
 
 //  LOCALISATION STRINGS
 
+CHARACTER_SET UTF8
+
 // Caption string for app.
 #define qtn_caption_string "KeypadBuddy"
 
+#if defined(LANGUAGE_SC) || defined(LANGUAGE_01) || defined(LANGUAGE_10)
 #define qtn_command_activate_monitor "Activate"
 #define qtn_command_deactivate_monitor "Deactivate"
 #define qtn_command_reset_cache "Restore defaults"
-
-#define qtn_help "Help"
-
-#define qtn_about "About"
-
-// Third item in "Options" menu pane
 #define qtn_exit "Exit"
+#elif defined(LANGUAGE_02)
+#define qtn_command_activate_monitor "Activer"
+#define qtn_command_deactivate_monitor "Désactiver"
+#define qtn_command_reset_cache "Paramètres par défaut"
+#define qtn_exit "Quitter"
+#elif defined(LANGUAGE_03)
+#define qtn_command_activate_monitor "Aktivieren"
+#define qtn_command_deactivate_monitor "Deaktivieren"
+#define qtn_command_reset_cache "Standard wiederherstellen"
+#define qtn_exit "Schließen"
+#elif defined(LANGUAGE_04)
+#define qtn_command_activate_monitor "Activar"
+#define qtn_command_deactivate_monitor "Desactivar"
+#define qtn_command_reset_cache "Restaurar valores predet."
+#define qtn_exit "Salir"
+#elif defined(LANGUAGE_05)
+#define qtn_command_activate_monitor "Attiva"
+#define qtn_command_deactivate_monitor "Disattiva"
+#define qtn_command_reset_cache "Ripristina predefinite"
+#define qtn_exit "Esci"
+#elif defined(LANGUAGE_06)
+#define qtn_command_activate_monitor "Aktivera"
+#define qtn_command_deactivate_monitor "Avaktivera"
+#define qtn_command_reset_cache "Återställ standard"
+#define qtn_exit "Avsluta"
+#elif defined(LANGUAGE_07)
+#define qtn_command_activate_monitor "Aktivér"
+#define qtn_command_deactivate_monitor "Deaktiver"
+#define qtn_command_reset_cache "Gendan standarder"
+#define qtn_exit "Afslut"
+#elif defined(LANGUAGE_08)
+#define qtn_command_activate_monitor "Aktiver"
+#define qtn_command_deactivate_monitor "Deaktiver"
+#define qtn_command_reset_cache "Gjenopprett standardinnst."
+#define qtn_exit "Avslutt"
+#elif defined(LANGUAGE_09)
+#define qtn_command_activate_monitor "Ota käyttöön"
+#define qtn_command_deactivate_monitor "Poista"
+#define qtn_command_reset_cache "Palauta oletusasetukset"
+#define qtn_exit "Poistu"
+#elif defined(LANGUAGE_13)
+#define qtn_command_activate_monitor "Activar"
+#define qtn_command_deactivate_monitor "Desactivar"
+#define qtn_command_reset_cache "Restaurar predefinições"
+#define qtn_exit "Sair"
+#elif defined(LANGUAGE_14)
+#define qtn_command_activate_monitor "Etkinleştir"
+#define qtn_command_deactivate_monitor "Kapat"
+#define qtn_command_reset_cache "Varsayılanları geri yükle"
+#define qtn_exit "Çıkış"
+#elif defined(LANGUAGE_15)
+#define qtn_command_activate_monitor "Virkja"
+#define qtn_command_deactivate_monitor "Slökkva"
+#define qtn_command_reset_cache "Nota forstillingar"
+#define qtn_exit "Hætta"
+#elif defined LANGUAGE_16
+#define qtn_command_activate_monitor "Включить"
+#define qtn_command_deactivate_monitor "Отключить"
+#define qtn_command_reset_cache "Восстанов. по умолчанию"
+#define qtn_exit "Выйти"
+#elif defined(LANGUAGE_17)
+#define qtn_command_activate_monitor "Aktiválás"
+#define qtn_command_deactivate_monitor "Kikapcsolás"
+#define qtn_command_reset_cache "Alapértékek visszaállítása"
+#define qtn_exit "Kilép"
+#elif defined(LANGUAGE_18)
+#define qtn_command_activate_monitor "Activeren"
+#define qtn_command_deactivate_monitor "Uitschakelen"
+#define qtn_command_reset_cache "Standaardinstell. herstellen"
+#define qtn_exit "Afsluiten"
+#elif defined(LANGUAGE_25)
+#define qtn_command_activate_monitor "Aktivovat"
+#define qtn_command_deactivate_monitor "Deaktivovat"
+#define qtn_command_reset_cache "Obnovit výchozí"
+#define qtn_exit "Konec"
+#elif defined(LANGUAGE_26)
+#define qtn_command_activate_monitor "Aktivovať"
+#define qtn_command_deactivate_monitor "Deaktivovať"
+#define qtn_command_reset_cache "Obnoviť pôvodné"
+#define qtn_exit "Ukonči"
+#elif defined(LANGUAGE_27)
+#define qtn_command_activate_monitor "Uaktywnij"
+#define qtn_command_deactivate_monitor "Wyłącz"
+#define qtn_command_reset_cache "Przywracanie ustawień dom."
+#define qtn_exit "Wyjdź"
+#elif defined(LANGUAGE_28)
+#define qtn_command_activate_monitor "Aktiviraj"
+#define qtn_command_deactivate_monitor "Deaktiviraj"
+#define qtn_command_reset_cache "Obnovi privzeto"
+#define qtn_exit "Izhod"
+#elif defined(LANGUAGE_37)
+#define qtn_command_activate_monitor "تنشيط"
+#define qtn_command_deactivate_monitor "إلغاء التنشيط"
+#define qtn_command_reset_cache "استعادة الافتراضي"
+#define qtn_exit "خروج"
+#elif defined(LANGUAGE_42)
+#define qtn_command_activate_monitor "Активиране"
+#define qtn_command_deactivate_monitor "Деактивиране"
+#define qtn_command_reset_cache "Възстанов. станд. стойности"
+#define qtn_exit "Изход"
+#elif defined(LANGUAGE_44)
+#define qtn_command_activate_monitor "Activa"
+#define qtn_command_deactivate_monitor "Desactiva"
+#define qtn_command_reset_cache "Restaura valors predefinits"
+#define qtn_exit "Surt"
+#elif defined(LANGUAGE_45)
+#define qtn_command_activate_monitor "Aktiviraj"
+#define qtn_command_deactivate_monitor "Deaktiviraj"
+#define qtn_command_reset_cache "Vraćanje zadane postavke"
+#define qtn_exit "Izlaz"
+#elif defined(LANGUAGE_49)
+#define qtn_command_activate_monitor "Aktiveeri"
+#define qtn_command_deactivate_monitor "Tühista"
+#define qtn_command_reset_cache "Taasta vaikeseaded"
+#define qtn_exit "Välju"
+#elif defined(LANGUAGE_50)
+#define qtn_command_activate_monitor "فعالسازی"
+#define qtn_command_deactivate_monitor "غیرفعالسازی"
+#define qtn_command_reset_cache "بازیابی پیش فرض ها"
+#define qtn_exit "خروج"
+#elif defined(LANGUAGE_51)
+#define qtn_command_activate_monitor "Activer"
+#define qtn_command_deactivate_monitor "Désactiver"
+#define qtn_command_reset_cache "Restaurer valeurs par défaut"
+#define qtn_exit "Quitter"
+#elif defined(LANGUAGE_54)
+#define qtn_command_activate_monitor "Ενεργοποίηση"
+#define qtn_command_deactivate_monitor "Απενεργοποίηση"
+#define qtn_command_reset_cache "Επαναφορά προεπιλογών"
+#define qtn_exit "Έξοδος"
+#elif defined(LANGUAGE_57)
+#define qtn_command_activate_monitor "הפעלה"
+#define qtn_command_deactivate_monitor "ביטול"
+#define qtn_command_reset_cache "שחזור הגדרות ברירת מחדל"
+#define qtn_exit "יציאה"
+#elif defined(LANGUAGE_58)
+#define qtn_command_activate_monitor "सक्रिय कर"
+#define qtn_command_deactivate_monitor "निष्क्रिय कर"
+#define qtn_command_reset_cache "प्राथमिक वापस लाएँ"
+#define qtn_exit "बाहर आए"
+#elif defined(LANGUAGE_59)
+#define qtn_command_activate_monitor "Aktifkan"
+#define qtn_command_deactivate_monitor "Nonaktifkan"
+#define qtn_command_reset_cache "Kembali ke default"
+#define qtn_exit "Keluar"
+#elif defined(LANGUAGE_65)
+#define qtn_command_activate_monitor "설정"
+#define qtn_command_deactivate_monitor "해제"
+#define qtn_command_reset_cache "기본값 복원"
+#define qtn_exit "종료"
+#elif defined(LANGUAGE_67)
+#define qtn_command_activate_monitor "Aktivizēt"
+#define qtn_command_deactivate_monitor "Deaktivizēt"
+#define qtn_command_reset_cache "Atjaunot noklus. vērtības"
+#define qtn_exit "Iziet"
+#elif defined(LANGUAGE_68)
+#define qtn_command_activate_monitor "Įjungti"
+#define qtn_command_deactivate_monitor "Išjungti"
+#define qtn_command_reset_cache "Atkurti numatytuosius"
+#define qtn_exit "Uždaryti prog."
+#elif defined(LANGUAGE_78)
+#define qtn_command_activate_monitor "Activare"
+#define qtn_command_deactivate_monitor "Dezactivare"
+#define qtn_command_reset_cache "Restaurare implicite"
+#define qtn_exit "Ieșire"
+#elif defined(LANGUAGE_79)
+#define qtn_command_activate_monitor "Aktiviraj"
+#define qtn_command_deactivate_monitor "Deaktiviraj"
+#define qtn_command_reset_cache "Vraćanje podrazumevanog"
+#define qtn_exit "Izađi"
+#elif defined(LANGUAGE_93)
+#define qtn_command_activate_monitor "Увімкнути"
+#define qtn_command_deactivate_monitor "Вимкнути"
+#define qtn_command_reset_cache "Відновити станд. установки"
+#define qtn_exit "Вихід"
+#endif
 
 #define qtn_loc_resource_file_1 "\\resource\\apps\\KeypadBuddy"
-
-#define qtn_about_dialog_title "About"
-
-#define qtn_about_dialog_text "KeypadBuddy Version 1.0.0\n\nAuthor: \n\nSupport: support@mycompany.com\n\n(c) Your copyright notice"
 
 // End of File

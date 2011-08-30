@@ -24,7 +24,6 @@ SOURCE			KeypadBuddyAppView.cpp
 SOURCE			KeypadBuddyAppUi.cpp
 SOURCE			KeypadBuddyDocument.cpp
 SOURCE          KeypadBuddyEngine.cpp
-SOURCE          KeypadBuddyAppUiLanguageRestore.cpp
 
 USERINCLUDE    ..\inc\ui
 USERINCLUDE    ..\inc
@@ -35,11 +34,12 @@ SYSTEMINCLUDE   \epoc32\include\platform\mw
 
 SOURCEPATH		..\data
 
-START RESOURCE	KeypadBuddy.rss
-HEADER
-TARGET KeypadBuddy
-TARGETPATH resource\apps
-END //RESOURCE
+START RESOURCE KeypadBuddy.rss
+	HEADER
+	TARGET KeypadBuddy
+	TARGETPATH resource\apps
+	LANG 01 02 03 04 05 06 07 08 09 10 13 14 15 16 17 18 25 26 27 28 37 42 44 45 49 50 51 54 57 58 59 65 67 68 78 79 93 SC
+END
 
 START RESOURCE	KeypadBuddy_reg.rss
 TARGET KeypadBuddy_reg
@@ -61,7 +61,6 @@ LIBRARY        aknicon.lib
 LIBRARY        aknskins.lib aknskinsrv.lib aknswallpaperutils.lib
 LIBRARY        fepbase.lib
 
-LANG SC
 
 VENDORID	  	  0
 

@@ -26,9 +26,9 @@
 // Two-phased constructor.
 // -----------------------------------------------------------------------------
 //
-CKeypadBuddyAppView* CKeypadBuddyAppView::NewL(const TRect& aRect, TBool aMonitorActive)
+CKeypadBuddyAppView* CKeypadBuddyAppView::NewL(const TRect& aRect)
     {
-    CKeypadBuddyAppView* self = CKeypadBuddyAppView::NewLC(aRect, aMonitorActive);
+    CKeypadBuddyAppView* self = CKeypadBuddyAppView::NewLC(aRect);
     CleanupStack::Pop(self);
     return self;
     }
@@ -38,9 +38,9 @@ CKeypadBuddyAppView* CKeypadBuddyAppView::NewL(const TRect& aRect, TBool aMonito
 // Two-phased constructor.
 // -----------------------------------------------------------------------------
 //
-CKeypadBuddyAppView* CKeypadBuddyAppView::NewLC(const TRect& aRect, TBool aMonitorActive)
+CKeypadBuddyAppView* CKeypadBuddyAppView::NewLC(const TRect& aRect)
     {
-    CKeypadBuddyAppView* self = new (ELeave) CKeypadBuddyAppView(aMonitorActive);
+    CKeypadBuddyAppView* self = new (ELeave) CKeypadBuddyAppView();
     CleanupStack::PushL(self);
     self->ConstructL(aRect);
     return self;
@@ -75,8 +75,7 @@ void CKeypadBuddyAppView::ConstructL(const TRect& aRect)
 // C++ default constructor can NOT contain any code, that might leave.
 // -----------------------------------------------------------------------------
 //
-CKeypadBuddyAppView::CKeypadBuddyAppView(TBool aMonitorActive) :
-    iMonitorActive(aMonitorActive)
+CKeypadBuddyAppView::CKeypadBuddyAppView()
     {
     // No implementation required
     }

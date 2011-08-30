@@ -1,0 +1,11 @@
+TARGET          KeypadBuddyTest.mmp
+UID             0 0
+CAPABILITY      All -TCB
+
+SOURCEPATH      ../test/src
+SOURCE          KeypadBuddyTest.cpp
+
+USERINCLDE      ../inc
+SYSTEMINCLUDE   /epoc32/include
+
+LIBRARY         euser.lib

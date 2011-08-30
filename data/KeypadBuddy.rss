@@ -50,7 +50,7 @@ RESOURCE TBUF r_default_document_name
 RESOURCE EIK_APP_INFO
 	{
 	menubar = r_menubar;
-	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
 	}
 
 
@@ -104,11 +104,6 @@ RESOURCE MENU_PANE r_menu
 				}
 		};
 	}
-
-RESOURCE DIALOG r_patcher_dialog
-    {
-    flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagFillAppClientRect|EEikDialogFlagModeless;
-    }
 
 // -----------------------------------------------------------------------------
 //

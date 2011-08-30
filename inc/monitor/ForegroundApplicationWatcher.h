@@ -14,12 +14,12 @@ public:
     TUid ForegroundAppL();
     inline RWsSession& WsSession() {return iWsSession;}
     inline RWindowGroup& WindowGroup() {return iWg;}
+    void Watch();
 private:
     CForegroundApplicationWatcher(CKeypadBuddyServer& aServer);
     void ConstructL();
     void RunL();
     void DoCancel();
-    void Watch();
 private:
     CKeypadBuddyServer& iServer;
     RWsSession iWsSession;

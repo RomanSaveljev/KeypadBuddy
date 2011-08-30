@@ -8,6 +8,7 @@
 class CForegroundApplicationWatcher;
 class CInputMethodWatcher;
 class CDictionaryFileStore;
+class TInputMethodSettings;
 
 class CKeypadBuddyServer : public CServer2
     {
@@ -30,6 +31,9 @@ private:
     void CancelWatchingFepKeys();
     static CDictionaryFileStore* CreateFileStoreLC(RFs& aFs, TUint32 aStreamUid);
     static void WriteActivationEnabledSettingL(CDictionaryFileStore& aFileStore, TBool aValue);
+    static void ResumeWatchForegroundApplicationCleanupOperation(TAny* aForegroundWatcher);
+    static void ResumeWatchingFepKeysCleanupOperation(TAny* aSelf);
+    void InitiateInputMethodSettingsFromFepRepository(TInputMethodSettings& aSettings) const;
 private:
     RFs& iFs;
     TInt iLastError;

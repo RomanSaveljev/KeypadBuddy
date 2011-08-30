@@ -35,8 +35,7 @@ void CKeypadBuddyAppUi::ConstructL()
     {
     // Initialise app UI with standard value.
     BaseConstructL(CAknAppUi::EAknEnableSkin|CAknAppUi::EAppOrientationPortrait);
-    iEngine = CKeypadBuddyEngine::NewL(*this);
-    iAppView = CKeypadBuddyAppView::NewL(ClientRect(), iEngine->MonitorActive());
+    iAppView = CKeypadBuddyAppView::NewL(ClientRect());
     }
 
 // -----------------------------------------------------------------------------
@@ -130,11 +129,20 @@ void CKeypadBuddyAppUi::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPa
 
 void CKeypadBuddyAppUi::HandleForegroundEventL(TBool aForeground)
     {
-    CAknAppUi::HandleForegroundEventL(aForeground);
-    if (!aForeground)
+    if (aForeground)
         {
-        Exit();
+        if (!iEngine)
+            {
+            iEngine = CKeypadBuddyEngine::NewL(*this);
+            }
+        iAppView->SetMonitorActiveL(iEngine->MonitorActive());
         }
+    else
+        {
+        delete iEngine;
+        iEngine = NULL;
+        }
+    CAknAppUi::HandleForegroundEventL(aForeground);
     }
 
 // End of File

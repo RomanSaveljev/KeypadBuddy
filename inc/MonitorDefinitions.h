@@ -14,13 +14,9 @@ enum TMonitorFunctions
     EMonitorResetCache
     };
 
-const TInt KArgumentSlot = 8;
-_LIT8(KLanguageRestore, "-languagerestore");
+const TInt KSettingsRootStreamUidValue = KKeypadBuddyMonitorUidValue;
+const TInt KOwnSettingsStreamUidValue = KKeypadBuddyMonitorUidValue;
 
 const TInt KForceActivateArgumentSlot = 9;
-
-const TUint32 KCachedFepSettingsStream = KKeypadBuddyMonitorUidValue;
-const TUint32 KMonitorSettingsStream = KCachedFepSettingsStream + 1;
-const TUint32 KActivationEnabledSetting = 1;
 
 #endif //MONITORDEFINITIONS_H

@@ -13,7 +13,6 @@
 #include <eikproc.h>
 #include "MonitorDefinitions.h"
 #include "KeypadBuddyApplication.h"
-#include "KeypadBuddyAppUiLanguageRestore.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -81,15 +80,7 @@ CKeypadBuddyDocument::~CKeypadBuddyDocument()
 //
 CEikAppUi* CKeypadBuddyDocument::CreateAppUiL()
     {
-    CKeypadBuddyApplication* application = static_cast<CKeypadBuddyApplication*>(Application());
-    if (application->LanguageRestore())
-        {
-        return new (ELeave) CKeypadBuddyAppUiLanguageRestore();
-        }
-    else
-        {
-        return new (ELeave) CKeypadBuddyAppUi();
-        }
+    return new (ELeave) CKeypadBuddyAppUi();
     }
 
 // End of File

@@ -35,11 +35,6 @@ public:
      */
     TUid AppDllUid() const;
 
-    inline TBool LanguageRestore() const
-        {
-        return iLanguageRestore;
-        }
-
 protected:
     // Functions from base classes
 
@@ -51,10 +46,6 @@ protected:
      */
     CApaDocument* CreateDocumentL();
 
-    TFileName ResourceFileName() const;
-
-private:
-    TBool iLanguageRestore;
     };
 
 #endif // __KEYPADBUDDYAPPLICATION_H__
